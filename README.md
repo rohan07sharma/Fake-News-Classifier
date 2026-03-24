@@ -32,7 +32,7 @@ Fake-News-Classifier/
 ## 🚀 How to Run
 1. Clone this repository:
    ```bash
-   git clone https://github.com/<your-username>/Fake-News-Classifier.git
+   git clone https://github.com/rohan07sharma/Fake-News-Classifier.git
    cd Fake-News-Classifier
    ```
 
