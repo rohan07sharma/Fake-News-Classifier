@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake News Classifier</title>
+    <!-- Modern Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="background-animation">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <main class="container glass-panel">
+        <header>
+            <div class="logo-container">
+                <span class="logo-icon">🔍</span>
+                <h1>Truth<span class="highlight">Lens</span></h1>
+            </div>
+            <p class="subtitle">AI-Powered Fake News Detection</p>
+        </header>
+
+        <section class="classifier-section">
+            <div class="input-container">
+                <div class="input-header">
+                    <label for="newsInput">Enter News Title or Content</label>
+                    <div class="header-buttons" style="display: flex; gap: 10px; align-items: center;">
+                        <button id="liveNewsBtn" class="demo-btn" type="button" style="background: rgba(30, 215, 96, 0.1); color: #1ed760; border-color: rgba(30, 215, 96, 0.2);">
+                            <span class="demo-icon">🌍</span> Live News
+                        </button>
+                        <button id="demoBtn" class="demo-btn" type="button">
+                            <span class="demo-icon">✨</span> Sample
+                        </button>
+                    </div>
+                </div>
+                <div class="textarea-wrapper">
+                    <textarea id="newsInput" placeholder="Paste the news text here..." rows="6"></textarea>
+                    <div class="char-count"><span id="charCount">0</span> chars</div>
+                </div>
+                <!-- Container for displaying fetched live news -->
+                <div id="liveNewsContainer" class="hidden" style="margin-top: 15px; padding: 15px; background: rgba(0, 0, 0, 0.2); border-radius: 8px;">
+                    <p style="font-size: 0.9rem; color: #aaa; margin-bottom: 10px;">Select a live BBC World News article to analyze:</p>
+                    <div id="liveNewsList" style="display: flex; flex-direction: column; gap: 8px;"></div>
+                </div>
+            
+            <button id="predictBtn" class="primary-btn">
+                <span class="btn-text">Analyze Authenticity</span>
+                <span class="loader hidden"></span>
+            </button>
+            <div id="errorMsg" class="error-msg hidden"></div>
+        </section>
+
+        <section id="resultSection" class="result-section hidden">
+            <div id="resultCard" class="result-card">
+                <div class="result-icon"></div>
+                <h2 id="resultTitle"></h2>
+                <p id="resultDesc">Our AI has analyzed the patterns in the text to determine its authenticity.</p>
+            </div>
+        </section>
+
+        <div class="tech-stack">
+            <span class="badge">Scikit-Learn</span>
+            <span class="badge">TF-IDF Vectorizer</span>
+            <span class="badge">Naive Bayes</span>
+            <span class="badge">Flask</span>
+        </div>
+
+        <footer>
+            <p>Designed for accuracy & speed</p>
+        </footer>
+    </main>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
