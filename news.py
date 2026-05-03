@@ -1,52 +1,17 @@
-#for data handling & visualization
-import pandas as pd 
-import matplotlib.pyplot as plt
-import seaborn as sns
+import joblib
+from flask import Flask, render_template, request, jsonify
+import traceback
 
-#  converts text into numeric features.
-from sklearn.feature_extraction.text import TfidfVectorizer
+print("Loading saved model and vectorizer...")
+try:
+    model = joblib.load("model.joblib")
+    tfidf = joblib.load("vectorizer.joblib")
+    print("Model loaded successfully!")
+except Exception as e:
+    print(f"Error loading model: {e}")
+    print("Please run `python train_model.py` first to generate the models.")
+    # Exiting or continuing without model will fail later, but for now we just print
 
-#  splits dataset into training & testing
-from sklearn.model_selection import train_test_split
-
-# Naive Bayes model for text classification
-from sklearn.naive_bayes import MultinomialNB
-
-# for model evaluation
-from sklearn.metrics import accuracy_score, confusion_matrix
-
-# Load datasets
-fake = pd.read_csv("Fake.csv")
-real = pd.read_csv("True.csv")
-
-# Label them
-fake['label'] = 0
-real['label'] = 1
-
-# Combine and reset index
-df = pd.concat([fake, real], axis=0).reset_index(drop=True)
-
-# Create content column and keep only needed cols
-df['content'] = df['title'] + " " + df['text']
-df = df[['content', 'label']]
-
-# Train-test split
-X_train, X_test, y_train, y_test = train_test_split(
-    df['content'], df['label'], test_size=0.2, random_state=42
-)
-
-# Vectorize text
-tfidf = TfidfVectorizer(stop_words='english', max_df=0.7)
-X_train_tfidf = tfidf.fit_transform(X_train)
-X_test_tfidf = tfidf.transform(X_test)
-
-# Train model
-model = MultinomialNB()
-model.fit(X_train_tfidf, y_train)
-
-# Predict & evaluate
-y_pred = model.predict(X_test_tfidf)
-print("Accuracy:", accuracy_score(y_test, y_pred))
 
 # Helper function
 def predict_news(text):
@@ -54,10 +19,61 @@ def predict_news(text):
     pred = model.predict(vector)[0]
     return "Real News ✅" if pred == 1 else "Fake News ❌"
 
-# User Input Loop
-while True:
-    news_title = input("\nEnter news title (or type 'exit' to quit): ")
-    if news_title.lower() == "exit":
-        break
-    result = predict_news(news_title)
-    print("Prediction:", result)
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+@app.route('/predict', methods=['POST'])
+def predict():
+    try:
+        data = request.get_json()
+        news_text = data.get('text', '')
+        if not news_text.strip():
+            return jsonify({'error': 'Please enter some text to verify.'}), 400
+            
+        result = predict_news(news_text)
+        is_real = "Real News" in result
+        
+        return jsonify({
+            'prediction': result,
+            'is_real': is_real
+        })
+    except Exception as e:
+        print(f"Error during prediction: {traceback.format_exc()}")
+        return jsonify({'error': 'An error occurred during prediction.'}), 500
+
+import urllib.request
+import xml.etree.ElementTree as ET
+
+@app.route('/fetch_live_news', methods=['GET'])
+def fetch_live_news():
+    try:
+        # Fetch news from a public RSS feed (e.g., BBC News)
+        url = 'http://feeds.bbci.co.uk/news/rss.xml'
+        req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+        with urllib.request.urlopen(req) as response:
+            xml_data = response.read()
+            
+        root = ET.fromstring(xml_data)
+        news_list = []
+        
+        # Get the first 5 news items
+        for item in root.findall('./channel/item')[:5]:
+            title = item.find('title').text if item.find('title') is not None else ''
+            description = item.find('description').text if item.find('description') is not None else ''
+            if title and description:
+                news_list.append({
+                    'title': title,
+                    'text': title + ". " + description # Combine title and description for better context
+                })
+                
+        return jsonify({'news': news_list})
+    except Exception as e:
+        print(f"Error fetching live news: {e}")
+        return jsonify({'error': 'Could not fetch live news at this time.'}), 500
+
+if __name__ == '__main__':
+    print("Starting Flask application...")
+    app.run(debug=True, use_reloader=False)

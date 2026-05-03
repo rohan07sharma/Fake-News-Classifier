@@ -7,13 +7,10 @@ A Machine Learning project that classifies news articles as **Real** or **Fake**
 ## 📂 Dataset Instructions
 ⚠️ **Note:** The dataset is not included in this repository (files are larger than GitHub’s 25 MB limit).  
 
-👉 Example dataset is available on **Google Drive**:  
-- [True.csv (Real News)](https://drive.google.com/file/d/1ln7Jw_HLPzhXRbXR1OQf9roI8_gJzdfO/view?usp=sharing) 
-- [Fake.csv (Fake News)](https://drive.google.com/file/d/1ZtXjrz17cXOOk3uKwdCXeYs41ENriywV/view?usp=drive_link)
-
 To run this project:  
-1. Download the above files and place them in the **same folder** as `news.py`.  
-2. Rename the files exactly as:  
+1. Download the **Fake and Real News Dataset** (for example: [Kaggle Dataset](https://www.kaggle.com/datasets/clmentbisaillon/fake-and-real-news-dataset) or any other similar dataset).  
+2. Place the dataset files in the **same folder** as `news.py`.  
+3. Rename the files exactly as:  
    - `Fake.csv` → contains fake news articles  
    - `True.csv` → contains real news articles  
 
@@ -32,7 +29,7 @@ Fake-News-Classifier/
 ## 🚀 How to Run
 1. Clone this repository:
    ```bash
-   git clone https://github.com/rohan07sharma/Fake-News-Classifier.git
+   git clone https://github.com/<your-username>/Fake-News-Classifier.git
    cd Fake-News-Classifier
    ```
 
@@ -75,4 +72,3 @@ Fake-News-Classifier/
 ## 👨‍💻 Author
 - **Rohan Sharma**
 - [LinkedIn](https://linkedin.com) | [GitHub](https://github.com)
-

@@ -1,0 +1,17 @@
+# Environments
+venv/
+env/
+.env
+
+# Datasets
+*.csv
+Fake.csv
+True.csv
+
+# Python
+__pycache__/
+*.pyc
+
+# IDEs
+.idea/
+.vscode/
